@@ -1,5 +1,4 @@
 from telegram_helper import telegram_helper
-from telegram_commands import telegram_commands
 
 from actions.camera_send_record import camera_send_record
 from actions.fans_off import fans_off
