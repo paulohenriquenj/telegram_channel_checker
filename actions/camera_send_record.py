@@ -10,11 +10,12 @@ class camera_send_record:
     def telegram_command(self):
         return '/status'
 
-    def action(self, telegram_msg):
+    def action(self, telegram_msg, record_time_in_seconds=10):
         if telegram_msg == self.telegram_command():
-            record_video().record_video_time(10)
+            record = record_video()
+            record.record_video_time(record_time_in_seconds)
             telegram_helper().send_video(
-                record_video.file_mp4
+                record.file_mp4
             )
             return
 

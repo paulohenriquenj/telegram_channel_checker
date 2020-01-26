@@ -9,18 +9,16 @@ load_dotenv()
 class telegram_helper:
 
     env_vars = ['TELEGRAM_TOKEN', 'CHAT_ID', 'ALLOWED_USER']
-    telegram_token = ''
-    chat_id = ''
-    allowed_user = ''
 
     def __init__(self):
-        logging.basicConfig(level=logging.INFO)
+        logging.basicConfig(level=logging.DEBUG)
         self.load_env_info()
         self.bot = telegram.Bot(token=self.telegram_token)
 
     def load_env_info(self):
         for env_var in self.env_vars:
             try:
+                logging.debug(f'Setting: {env_var}')
                 setattr(self, env_var.lower(), os.getenv(env_var))
             except Exception as e:
                 print(e)
@@ -40,6 +38,7 @@ class telegram_helper:
         print(self.bot.get_updates())
 
     def is_msg_from_authorized_user(self, user_name):
+        logging.debug(f'User_allowed: {self.allowed_user} - User: {user_name}')
         if self.allowed_user == '*':
             return True
         
@@ -60,7 +59,7 @@ class telegram_helper:
             logging.debug('------')
 
             if self.is_msg_from_authorized_user(update.message.from_user.name) and self.is_update_msg_id_greater_than_last_executed(update):
-                logging.info ('Exec command')
+                logging.info (f'Exec command[{update.message.message_id}]')
                 self.write_message_id(update)
                 yield update
 
@@ -72,11 +71,16 @@ class telegram_helper:
 
             logging.debug(f'content_id [{content}] ')
             logging.debug(f'msg_id [{update.message.message_id}] ')
-            
-            if content and  update.message.message_id > int(content):
+
+            if not content:
+                logging.debug('File empty')
                 return True
 
-        return False
+            if update.message.message_id > int(content):
+                return True
+
+        return True
+
 
     def write_message_id(self, update):
         file_id = open("msg_last_executed_id", 'w')

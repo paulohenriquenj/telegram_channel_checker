@@ -9,7 +9,9 @@ class record_video:
 
     def __init__(self):
         self.cam = picamera.PiCamera()
+
         self.record_dir = 'record_files'
+        self.create_dir(self.record_dir)
         self.file_h264 = self.record_dir + '/video.h264'
         self.file_mp4 = self.record_dir + '/video.mp4'
 
@@ -34,22 +36,6 @@ class record_video:
         self.stop_record()
         self.video_convert_to_mp4()
 
-# cam = picamera.PiCamera()
-
-# record_dir = 'record_files'
-
-# file_h264 = record_dir + '/video.h264'
-
-# file_mp4 = record_dir + '/video.mp4'
-
-# cam.start_recording(file_h264)
-
-# time.sleep(10)
-
-# cam.stop_recording()
-
-# if os.path.isfile(file_h264) :
-#     cmd = f'ffmpeg -y -framerate 24 -i {file_h264} -c copy {file_mp4}'
-#     subprocess.call(cmd, shell=True)
-
-
+    def create_dir(self, record_dir):
+        if not os.path.isdir(record_dir):
+            os.mkdir(record_dir)
